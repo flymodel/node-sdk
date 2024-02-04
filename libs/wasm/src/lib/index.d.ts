@@ -3,6 +3,8 @@
 /**
 */
 export function start(): void;
+export type ErrorExt = {} & Object;
+
 export interface UploadModelVersionArgsWithContext extends UploadRequestParams {
     extra?: number[];
 }
@@ -44,58 +46,6 @@ export type ExperimentFunction =
     | ((experiment: Experiment) => void);
 
 
-export type ErrorExt = {} & Object;
-
-export interface Model {
-    id: number;
-    name: string;
-    createdAt: string;
-    lastModified: string;
-    namespaceId: number;
-}
-
-export interface PaginatedModel {
-    page: CurrentPage;
-    totalPages: number;
-    totalItems: number;
-    data: Model[];
-}
-
-export interface NamespaceModels {
-    model: PaginatedModel;
-}
-
-export interface NamespaceModelsVariables {
-    model_id: number | undefined;
-    model_name: string | undefined;
-    model_namespace: number | undefined;
-    page: Page | undefined;
-}
-
-export interface DeleteModelVersion {
-    deleteModelVersion: boolean;
-}
-
-export interface DeleteModelVersionVariables {
-    hard: boolean | undefined;
-    id: number;
-}
-
-export interface ModelVersion {
-    id: number;
-    version: string;
-    modelId: number;
-}
-
-export interface CreateModelVersion {
-    createModelVersion: ModelVersion;
-}
-
-export interface CreateModelVersionVariables {
-    model_id: number;
-    version_tag: string;
-}
-
 export interface Namespace {
     id: number;
     name: string;
@@ -119,19 +69,11 @@ export interface QueryNamespacesVariables {
     page: Page | undefined;
 }
 
-export interface DeleteModel {
-    deleteModel: boolean;
+export interface DeleteModelVersion {
+    deleteModelVersion: boolean;
 }
 
-export interface DeleteModelVariables {
-    id: number;
-}
-
-export interface DeleteExperiment {
-    deleteExperiment: boolean;
-}
-
-export interface DeleteExperimentVariables {
+export interface DeleteModelVersionVariables {
     hard: boolean | undefined;
     id: number;
 }
@@ -160,6 +102,66 @@ export type ArchiveFormat = "arrow" | "csv" | "html" | "jpeg" | "json" | "jsonl"
 export type ArchiveCompression = "gzip" | "lz4" | "snappy" | "tar" | "tzg" | "uncompressed" | "zip" | "zstd";
 
 export type Lifecycle = "prod" | "qa" | "stage" | "test";
+
+export interface ObjectBlob {
+    format: ArchiveFormat | undefined;
+    encode: ArchiveCompression | undefined;
+    created_at: string;
+}
+
+export interface ExperimentArtifact {
+    id: number;
+    version_id: number;
+    name: string;
+    object: ObjectBlob;
+}
+
+export interface PaginatedExperimentArtifact {
+    page: CurrentPage;
+    total_pages: number;
+    total_items: number;
+    data: ExperimentArtifact[];
+}
+
+export interface Experiment {
+    artifacts: PaginatedExperimentArtifact;
+}
+
+export interface PaginatedExperiment {
+    data: Experiment[];
+}
+
+export interface ExperimentArtifacts {
+    experiment: PaginatedExperiment;
+}
+
+export interface ExperimentArtifactsVariables {
+    id: number;
+    page: Page | undefined;
+}
+
+export interface DeleteModel {
+    deleteModel: boolean;
+}
+
+export interface DeleteModelVariables {
+    id: number;
+}
+
+export interface Model {
+    id: number;
+    name: string;
+    namespaceId: number;
+}
+
+export interface CreateModel {
+    createModel: Model;
+}
+
+export interface CreateModelVariables {
+    name: string;
+    namespace: number;
+}
 
 export interface Namespace {
     id: number;
@@ -244,11 +246,12 @@ export interface QueryBucketsVariables {
     role: Lifecycle | undefined;
 }
 
-export interface DeleteNamespace {
-    deleteNamespace: boolean;
+export interface DeleteExperiment {
+    deleteExperiment: boolean;
 }
 
-export interface DeleteNamespaceVariables {
+export interface DeleteExperimentVariables {
+    hard: boolean | undefined;
     id: number;
 }
 
@@ -285,41 +288,40 @@ export interface UpdateModelVariables {
     name: string;
 }
 
-export interface ObjectBlob {
-    format: ArchiveFormat | undefined;
-    encode: ArchiveCompression | undefined;
-    created_at: string;
-}
-
-export interface ExperimentArtifact {
+export interface Model {
     id: number;
-    version_id: number;
     name: string;
-    object: ObjectBlob;
+    createdAt: string;
+    lastModified: string;
+    namespaceId: number;
 }
 
-export interface PaginatedExperimentArtifact {
+export interface PaginatedModel {
     page: CurrentPage;
-    total_pages: number;
-    total_items: number;
-    data: ExperimentArtifact[];
+    totalPages: number;
+    totalItems: number;
+    data: Model[];
 }
 
-export interface Experiment {
-    artifacts: PaginatedExperimentArtifact;
+export interface NamespaceModels {
+    model: PaginatedModel;
 }
 
-export interface PaginatedExperiment {
-    data: Experiment[];
-}
-
-export interface ExperimentArtifacts {
-    experiment: PaginatedExperiment;
-}
-
-export interface ExperimentArtifactsVariables {
-    id: number;
+export interface NamespaceModelsVariables {
+    model_id: number | undefined;
+    model_name: string | undefined;
+    model_namespace: number | undefined;
     page: Page | undefined;
+}
+
+export interface DeleteNamespace {
+    deleteNamespace: boolean;
+}
+
+export interface DeleteNamespaceVariablesWithContext {}
+
+export interface DeleteNamespaceVariables {
+    id: number;
 }
 
 export interface Namespace {
@@ -339,19 +341,19 @@ export interface CreateNamespaceVariables {
     description: string;
 }
 
-export interface Model {
+export interface ModelVersion {
     id: number;
-    name: string;
-    namespaceId: number;
+    version: string;
+    modelId: number;
 }
 
-export interface CreateModel {
-    createModel: Model;
+export interface CreateModelVersion {
+    createModelVersion: ModelVersion;
 }
 
-export interface CreateModelVariables {
-    name: string;
-    namespace: number;
+export interface CreateModelVersionVariables {
+    model_id: number;
+    version_tag: string;
 }
 
 export interface Bucket {
@@ -481,9 +483,9 @@ export class Experiment {
   free(): void;
 /**
 * @param {Client} client
-* @param {Experiment} experiment
+* @param {CreateExperimentVariables} args
 */
-  constructor(client: Client, experiment: Experiment);
+  constructor(client: Client, args: CreateExperimentVariables);
 /**
 * @param {Function} experiment_fn
 * @returns {Promise<void>}

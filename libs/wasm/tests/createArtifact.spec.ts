@@ -3,19 +3,21 @@ import { Experiment, Client } from '../src/lib';
 import { defaultClient } from './utils';
 
 async function myExperimentA(exp: Experiment) {
-  let data = new TextEncoder().encode('okok');
-  console.log('experiment inner', exp);
   const res = exp.saveArtifact(
     {
       artifact_name: 'My Artifact',
     },
-    data
+    new TextEncoder().encode('okok')
   );
-  console.log('response', res);
   try {
-    console.log('response', await res);
+    const { name, experiment_id } = await res;
+    expect(name).toBe('My Artifact');
+    // nonzero
+    expect(experiment_id).toBeTruthy();
+    console.log('response');
   } catch (err) {
     console.error('error caught', err);
+    throw err;
   }
 }
 
@@ -33,19 +35,17 @@ const setup = async (client: Client) => {
   console.debug('modelVersion', modelVersion.createModelVersion);
   expect(modelVersion.createModelVersion.modelId).toBe(model.createModel.id);
   expect(modelVersion.createModelVersion.version).toBe('v1.0.0');
-  return (
-    await client.createExperiment({
-      modelVersionId: modelVersion.createModelVersion.id,
-      experimentName: 'Some Experiment',
-    })
-  ).createExperiment;
+  return modelVersion.createModelVersion.id;
 };
 
 describe('saveArtifact', () => {
   test('experiment artifacts', async () => {
     const client = defaultClient();
-    await setup(client).then(async (exp) => {
-      const experiment = await new Experiment(client, exp);
+    await setup(client).then(async (modelVersionId) => {
+      const experiment = await new Experiment(client, {
+        modelVersionId,
+        experimentName: 'Some Experiment',
+      });
       await experiment.run(myExperimentA);
     });
   });
