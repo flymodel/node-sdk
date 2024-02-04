@@ -1,0 +1,26 @@
+{
+  "name": "@flymodel/wasm",
+  "collaborators": [
+    "Joshua A. <joshua.auchincloss@proton.me>"
+  ],
+  "description": "ml model registry",
+  "version": "0.1.0",
+  "license": "AGPLv3 AND MIT AND BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flymodel/flymodel"
+  },
+  "files": [
+    "src/lib/index_bg.wasm",
+    "src/lib/index.js",
+    "src/lib/index_bg.js",
+    "src/lib/index.d.ts"
+  ],
+  "module": "src/lib/index.js",
+  "homepage": "https://github.com/flymodel/flymodel",
+  "types": "src/lib/index.d.ts",
+  "sideEffects": [
+    "./src/lib/index.js",
+    "./src/lib/snippets/*"
+  ]
+}

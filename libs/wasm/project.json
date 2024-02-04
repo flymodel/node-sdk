@@ -1,0 +1,26 @@
+{
+  "name": "wasm",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/wasm/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:swc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/wasm",
+        "main": "libs/wasm/src/index.ts",
+        "tsConfig": "libs/wasm/tsconfig.lib.json",
+        "assets": ["libs/wasm/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/libs/wasm"
+      }
+    }
+  },
+  "tags": []
+}
