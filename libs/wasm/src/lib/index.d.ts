@@ -3,9 +3,15 @@
 /**
 */
 export function start(): void;
+
+export type ExperimentFunction =
+    | ((experiment: Experiment) => Promise<void>)
+    | ((experiment: Experiment) => void);
+
+
 export type ErrorExt = {} & Object;
 
-export interface UploadModelVersionArgsWithContext extends UploadRequestParams {
+export interface PartialUploadModelVersionArgs extends UploadRequestParams {
     extra?: number[];
 }
 
@@ -14,7 +20,7 @@ export interface UploadModelVersionArgs extends UploadRequestParams {
     extra?: number[];
 }
 
-export interface UploadExperimentArgsWithContext extends UploadRequestParams {}
+export interface PartialUploadExperimentArgs extends UploadRequestParams {}
 
 export interface UploadExperimentArgs extends UploadRequestParams {
     experiment: number;
@@ -39,69 +45,6 @@ export interface UploadRequestParams {
     format?: ArchiveFormat;
     encode?: ArchiveCompression;
 }
-
-
-export type ExperimentFunction =
-    | ((experiment: Experiment) => Promise<void>)
-    | ((experiment: Experiment) => void);
-
-
-export interface Namespace {
-    id: number;
-    name: string;
-    description: string;
-    createdAt: string;
-    lastModified: string;
-}
-
-export interface PaginatedNamespace {
-    page: CurrentPage;
-    totalPages: number;
-    totalItems: number;
-    data: Namespace[];
-}
-
-export interface QueryNamespaces {
-    namespace: PaginatedNamespace;
-}
-
-export interface QueryNamespacesVariables {
-    page: Page | undefined;
-}
-
-export interface DeleteModelVersion {
-    deleteModelVersion: boolean;
-}
-
-export interface DeleteModelVersionVariables {
-    hard: boolean | undefined;
-    id: number;
-}
-
-export interface Experiment {
-    id: number;
-    name: string;
-    versionId: number;
-}
-
-export interface CreateExperiment {
-    createExperiment: Experiment;
-}
-
-export interface CreateExperimentVariablesWithContext {
-    experiment_name: string;
-}
-
-export interface CreateExperimentVariables {
-    experiment_name: string;
-    model_version_id: number;
-}
-
-export type ArchiveFormat = "arrow" | "csv" | "html" | "jpeg" | "json" | "jsonl" | "md" | "mov" | "mp4" | "msgpack" | "parquet" | "pdf" | "png" | "txt" | "wav" | "xls" | "xml";
-
-export type ArchiveCompression = "gzip" | "lz4" | "snappy" | "tar" | "tzg" | "uncompressed" | "zip" | "zstd";
-
-export type Lifecycle = "prod" | "qa" | "stage" | "test";
 
 export interface ObjectBlob {
     format: ArchiveFormat | undefined;
@@ -140,137 +83,13 @@ export interface ExperimentArtifactsVariables {
     page: Page | undefined;
 }
 
-export interface DeleteModel {
-    deleteModel: boolean;
+export interface DeleteModelVersion {
+    deleteModelVersion: boolean;
 }
 
-export interface DeleteModelVariables {
-    id: number;
-}
-
-export interface Model {
-    id: number;
-    name: string;
-    namespaceId: number;
-}
-
-export interface CreateModel {
-    createModel: Model;
-}
-
-export interface CreateModelVariables {
-    name: string;
-    namespace: number;
-}
-
-export interface Namespace {
-    id: number;
-    name: string;
-    description: string;
-    lastModified: string;
-}
-
-export interface UpdateNamespace {
-    updateNamespace: Namespace;
-}
-
-export interface UpdateNamespaceVariables {
-    id: number;
-    name: string | undefined;
-    description: string | undefined;
-}
-
-export interface ModelState {
-    id: number;
-    versionId: number;
-    state: Lifecycle;
-}
-
-export interface UpdateModelVersionState {
-    updateModelVersionState: ModelState;
-}
-
-export interface UpdateModelVersionStateVariables {
-    id: number;
-    state: Lifecycle;
-}
-
-export interface Experiment {
-    id: number;
-    name: string;
-    versionId: number;
-    createdAt: string;
-}
-
-export interface PaginatedExperiment {
-    totalPages: number;
-    totalItems: number;
-    page: CurrentPage;
-    data: Experiment[];
-}
-
-export interface QueryExperiment {
-    experiment: PaginatedExperiment;
-}
-
-export interface QueryExperimentVariables {
-    id: number | undefined;
-    model_id: number | undefined;
-    name: string | undefined;
-    page: Page | undefined;
-}
-
-export interface Bucket {
-    id: number;
-    name: string;
-    namespace: number;
-    createdAt: string;
-    lastModified: string;
-}
-
-export interface PaginatedBucket {
-    page: CurrentPage;
-    totalPages: number;
-    totalItems: number;
-    data: Bucket[];
-}
-
-export interface QueryBuckets {
-    bucket: PaginatedBucket;
-}
-
-export interface QueryBucketsVariables {
-    id: number | undefined;
-    namespace: number | undefined;
-    page: Page | undefined;
-    role: Lifecycle | undefined;
-}
-
-export interface DeleteExperiment {
-    deleteExperiment: boolean;
-}
-
-export interface DeleteExperimentVariables {
+export interface DeleteModelVersionVariables {
     hard: boolean | undefined;
     id: number;
-}
-
-export interface DeleteBucket {
-    deleteBucket: boolean;
-}
-
-export interface DeleteBucketVariables {
-    id: number;
-}
-
-export interface CurrentPage {
-    size: number;
-    page: number;
-}
-
-export interface Page {
-    size: number;
-    page: number;
 }
 
 export interface Model {
@@ -314,13 +133,101 @@ export interface NamespaceModelsVariables {
     page: Page | undefined;
 }
 
-export interface DeleteNamespace {
-    deleteNamespace: boolean;
+export interface Bucket {
+    id: number;
+    name: string;
+    namespace: number;
+    createdAt: string;
+    lastModified: string;
 }
 
-export interface DeleteNamespaceVariablesWithContext {}
+export interface PaginatedBucket {
+    page: CurrentPage;
+    totalPages: number;
+    totalItems: number;
+    data: Bucket[];
+}
 
-export interface DeleteNamespaceVariables {
+export interface QueryBuckets {
+    bucket: PaginatedBucket;
+}
+
+export interface QueryBucketsVariables {
+    id: number | undefined;
+    namespace: number | undefined;
+    page: Page | undefined;
+    role: Lifecycle | undefined;
+}
+
+export interface DeleteExperiment {
+    deleteExperiment: boolean;
+}
+
+export interface DeleteExperimentVariables {
+    hard: boolean | undefined;
+    id: number;
+}
+
+export interface ModelVersion {
+    id: number;
+    version: string;
+    modelId: number;
+}
+
+export interface CreateModelVersion {
+    createModelVersion: ModelVersion;
+}
+
+export interface CreateModelVersionVariables {
+    model_id: number;
+    version_tag: string;
+}
+
+export interface Namespace {
+    id: number;
+    name: string;
+    description: string;
+    lastModified: string;
+}
+
+export interface UpdateNamespace {
+    updateNamespace: Namespace;
+}
+
+export interface UpdateNamespaceVariables {
+    id: number;
+    name: string | undefined;
+    description: string | undefined;
+}
+
+export interface Namespace {
+    id: number;
+    name: string;
+    description: string;
+    createdAt: string;
+    lastModified: string;
+}
+
+export interface PaginatedNamespace {
+    page: CurrentPage;
+    totalPages: number;
+    totalItems: number;
+    data: Namespace[];
+}
+
+export interface QueryNamespaces {
+    namespace: PaginatedNamespace;
+}
+
+export interface QueryNamespacesVariables {
+    page: Page | undefined;
+}
+
+export interface DeleteModel {
+    deleteModel: boolean;
+}
+
+export interface DeleteModelVariables {
     id: number;
 }
 
@@ -341,19 +248,19 @@ export interface CreateNamespaceVariables {
     description: string;
 }
 
-export interface ModelVersion {
+export interface Model {
     id: number;
-    version: string;
-    modelId: number;
+    name: string;
+    namespaceId: number;
 }
 
-export interface CreateModelVersion {
-    createModelVersion: ModelVersion;
+export interface CreateModel {
+    createModel: Model;
 }
 
-export interface CreateModelVersionVariables {
-    model_id: number;
-    version_tag: string;
+export interface CreateModelVariables {
+    name: string;
+    namespace: number;
 }
 
 export interface Bucket {
@@ -375,6 +282,99 @@ export interface CreateBucketVariables {
     namespace_id: number;
     region: string | undefined;
     role: Lifecycle;
+}
+
+export type ArchiveFormat = "arrow" | "csv" | "html" | "jpeg" | "json" | "jsonl" | "md" | "mov" | "mp4" | "msgpack" | "parquet" | "pdf" | "png" | "txt" | "wav" | "xls" | "xml";
+
+export type ArchiveCompression = "gzip" | "lz4" | "snappy" | "tar" | "tzg" | "uncompressed" | "zip" | "zstd";
+
+export type Lifecycle = "prod" | "qa" | "stage" | "test";
+
+export interface ModelState {
+    id: number;
+    versionId: number;
+    state: Lifecycle;
+}
+
+export interface UpdateModelVersionState {
+    updateModelVersionState: ModelState;
+}
+
+export interface UpdateModelVersionStateVariables {
+    id: number;
+    state: Lifecycle;
+}
+
+export interface Experiment {
+    id: number;
+    name: string;
+    versionId: number;
+    createdAt: string;
+}
+
+export interface PaginatedExperiment {
+    totalPages: number;
+    totalItems: number;
+    page: CurrentPage;
+    data: Experiment[];
+}
+
+export interface QueryExperiment {
+    experiment: PaginatedExperiment;
+}
+
+export interface QueryExperimentVariables {
+    id: number | undefined;
+    model_id: number | undefined;
+    name: string | undefined;
+    page: Page | undefined;
+}
+
+export interface DeleteNamespace {
+    deleteNamespace: boolean;
+}
+
+export interface PartialDeleteNamespaceVariables {}
+
+export interface DeleteNamespaceVariables {
+    id: number;
+}
+
+export interface DeleteBucket {
+    deleteBucket: boolean;
+}
+
+export interface DeleteBucketVariables {
+    id: number;
+}
+
+export interface Experiment {
+    id: number;
+    name: string;
+    versionId: number;
+}
+
+export interface CreateExperiment {
+    createExperiment: Experiment;
+}
+
+export interface PartialCreateExperimentVariables {
+    experiment_name: string;
+}
+
+export interface CreateExperimentVariables {
+    experiment_name: string;
+    model_version_id: number;
+}
+
+export interface CurrentPage {
+    size: number;
+    page: number;
+}
+
+export interface Page {
+    size: number;
+    page: number;
 }
 
 /**
@@ -492,9 +492,9 @@ export class Experiment {
 */
   run(experiment_fn: Function): Promise<void>;
 /**
-* @param {UploadExperimentArgsWithContext} artifact
+* @param {PartialUploadExperimentArgs} artifact
 * @param {Uint8Array} data
 * @returns {Promise<ExperimentResponse>}
 */
-  saveArtifact(artifact: UploadExperimentArgsWithContext, data: Uint8Array): Promise<ExperimentResponse>;
+  saveArtifact(artifact: PartialUploadExperimentArgs, data: Uint8Array): Promise<ExperimentResponse>;
 }
